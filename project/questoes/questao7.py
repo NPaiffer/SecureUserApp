@@ -1,13 +1,21 @@
-import questao1
-import os
+import questao2
+import json
 
-usuarios = []
+def salvar_usuarios(usuarios):
+    with open("usuarios.json", "w") as arquivo_json:
+        json.dump(usuarios, arquivo_json)
+
+def carregar_usuarios():
+    try:
+        with open("usuarios.json", "r") as arquivo_json:
+            return json.load(arquivo_json)
+    except FileNotFoundError:
+        return []
+
+usuarios = carregar_usuarios()
 
 def validar_login_e_senha(login, senha):
     return len(login) >= 3 and len(senha) >= 6
-
-def usuario_eh_admin():
-    return any(usuario["role"] == "admin" for usuario in usuarios)
 
 def cadastrar_usuario():
     print("\nCadastro de Usuário")
@@ -33,7 +41,12 @@ def cadastrar_usuario():
 
     usuarios.append({"login": novo_login, "senha": nova_senha, "role": nova_role})
 
+    salvar_usuarios(usuarios)
+
     print("Usuário cadastrado com sucesso!")
+
+def usuario_eh_admin():
+    return any(usuario["role"] == "admin" for usuario in usuarios)
 
 def menu():
     while True:
@@ -52,5 +65,4 @@ def menu():
             print("Opção inválida. Tente novamente.")
 
 if __name__ == "__main__":
-    usuarios = [{"login": "admin", "senha": "admin123", "role": "admin"}]
     menu()
